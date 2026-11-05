@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TextTool – Ad Testing Site</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f5f6f8;--card:#fff;--text:#1b1f27;--muted:#667085;--line:#e1e4ea;--accent:#2563eb;--adbg:#fff7e0;--adline:#f0c14b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141a;--card:#1c1f27;--text:#e8eaf0;--muted:#9aa3b2;--line:#2e3340;--accent:#6b9bff;--adbg:#2a2415;--adline:#8a6d1f}}
+:root[data-theme="dark"]{--bg:#12141a;--card:#1c1f27;--text:#e8eaf0;--muted:#9aa3b2;--line:#2e3340;--accent:#6b9bff;--adbg:#2a2415;--adline:#8a6d1f}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;padding-bottom:80px}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+header b{font-size:20px}
+nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}
+.wrap{max-width:1100px;margin:0 auto;padding:12px}
+.layout{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:900px){.layout{grid-template-columns:170px 1fr 320px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 8px;font-size:18px}
+textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--text);font:inherit}
+input[type=text],input[type=url]{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.stat{background:var(--bg);border-radius:8px;padding:8px;text-align:center}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--muted)}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+button.ghost{background:var(--bg);color:var(--text);border:1px solid var(--line)}
+/* ADS */
+.ad{position:relative;background:var(--adbg);border:1px dashed var(--adline);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;overflow:hidden;cursor:pointer;color:var(--text)}
+.ad .tag{position:absolute;top:2px;left:6px;font-size:10px;color:var(--muted);text-transform:uppercase}
+.ad .name{position:absolute;bottom:2px;right:6px;font-size:10px;color:var(--muted)}
+.ad .in b{display:block;font-size:16px}
+.ad .in span{font-size:13px;color:var(--muted)}
+.ad .cta{display:inline-block;margin-top:4px;background:var(--ac,#e11d48);color:#fff;border-radius:6px;padding:3px 10px;font-size:12px}
+.lead{width:100%;max-width:728px;min-height:90px;margin:12px auto}
+.side{min-height:250px}
+@media(min-width:900px){.sky{min-height:600px;position:sticky;top:10px}}
+.rect{width:100%;max-width:300px;min-height:250px;margin:0 auto 14px}
+.native{min-height:70px;margin:14px 0}
+.hide{display:none!important}
+#sticky{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}
+#sticky .ad{max-width:728px;margin:0 auto;min-height:60px}
+#sticky .x,.pop .x{position:absolute;top:4px;right:6px;z-index:3;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:50%;width:24px;height:24px;padding:0;line-height:1}
+.pop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.pop .box{position:relative;background:var(--card);border-radius:14px;padding:14px;width:100%;max-width:340px}
+.pop .ad{min-height:280px}
+.panel label{display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0}
+.mini{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:4px;border-bottom:1px solid var(--line);text-align:left}
+</style>
+</head>
+<body>
+<header>
+  <b>📝 TextTool</b>
+  <nav><a href="#tool">Tool</a><a href="#settings">Ad settings</a><a href="#report">Report</a></nav>
+</header>
+
+<div class="wrap">
+  <div id="slot-top" class="ad lead" data-slot="Top banner 728x90"></div>
+
+  <div class="layout">
+    <aside><div id="slot-left" class="ad side sky" data-slot="Left skyscraper"></div></aside>
+
+    <main>
+      <section class="card" id="tool">
+        <h2>Free Word &amp; Character Counter</h2>
+        <textarea id="txt" placeholder="Type or paste your text here…"></textarea>
+        <div class="stats">
+          <div class="stat"><b id="w">0</b><span>Words</span></div>
+          <div class="stat"><b id="c">0</b><span>Characters</span></div>
+          <div class="stat"><b id="s">0</b><span>Sentences</span></div>
+          <div class="stat"><b id="r">0</b><span>Min read</span></div>
+        </div>
+        <p style="margin:10px 0 0"><button class="ghost" id="clear">Clear</button> <button class="ghost" id="upper">UPPERCASE</button> <button class="ghost" id="lower">lowercase</button></p>
+      </section>
+
+      <div id="slot-native1" class="ad native" data-slot="In-content native 1"></div>
+
+      <section class="card">
+        <h2>Why use this tool?</h2>
+        <p>This is a demo page built only to test where your ads appear and how they behave. Scroll to see every placement: top banner, sidebars, in-content, footer, sticky bottom bar and a popup.</p>
+      </section>
+
+      <div id="slot-mid" class="ad rect" data-slot="Mid rectangle 300x250"></div>
+
+      <section class="card">
+        <h2>How it works</h2>
+        <p>Type text, get instant counts. Nothing is uploaded anywhere. Everything runs in your browser.</p>
+      </section>
+
+      <div id="slot-native2" class="ad native" data-slot="In-content native 2"></div>
+
+      <section class="card panel" id="settings">
+        <h2>⚙️ Your ad (edit &amp; test)</h2>
+        <input type="text" id="a-title" placeholder="Headline" value="Get Your Business Website Today">
+        <input type="text" id="a-text" placeholder="Description" value="AI-built websites, ready in 24 hours">
+        <input type="text" id="a-cta" placeholder="Button text" value="Contact Us">
+        <input type="url" id="a-url" placeholder="Link (https://…)">
+        <label>Button colour <input type="color" id="a-color" value="#e11d48"></label>
+        <label><input type="checkbox" id="open"> Open link on click</label>
+        <p class="mini">Show or hide placements:</p>
+        <div id="toggles"></div>
+        <p><button id="popbtn">Show popup now</button> <button class="ghost" id="reset">Reset counters</button></p>
+      </section>
+
+      <section class="card" id="report">
+        <h2>📊 Test report</h2>
+        <table><thead><tr><th>Placement</th><th>Views</th><th>Clicks</th></tr></thead><tbody id="rows"></tbody></table>
+      </section>
+    </main>
+
+    <aside>
+      <div id="slot-right1" class="ad rect" data-slot="Sidebar 300x250"></div>
+      <div id="slot-right2" class="ad rect" data-slot="Sidebar 300x250 (2)"></div>
+    </aside>
+  </div>
+
+  <div id="slot-foot" class="ad lead" data-slot="Footer banner 728x90"></div>
+  <p class="mini" style="text-align:center">© TextTool – testing site</p>
+</div>
+
+<div id="sticky"><button class="x" id="stickyx" aria-label="Close">×</button><div id="slot-sticky" class="ad" data-slot="Sticky bottom bar"></div></div>
+
+<div class="pop hide" id="pop"><div class="box"><button class="x" id="popx" aria-label="Close">×</button><div id="slot-pop" class="ad" data-slot="Popup / interstitial"></div></div></div>
+
+<script>
+const ad={title:"",text:"",cta:"",url:"",color:"#e11d48"};
+const slots=[...document.querySelectorAll(".ad[data-slot]")];
+const stats={};
+const $=id=>document.getElementById(id);
+
+function readAd(){
+  ad.title=$("a-title").value;ad.text=$("a-text").value;ad.cta=$("a-cta").value;
+  ad.url=$("a-url").value.trim();ad.color=$("a-color").value;
+}
+function render(){
+  readAd();
+  slots.forEach(el=>{
+    const n=el.dataset.slot;
+    el.style.setProperty("--ac",ad.color);
+    el.innerHTML='<span class="tag">Ad</span><span class="name">'+n+'</span><div class="in"><b></b><span></span><div class="cta"></div></div>';
+    el.querySelector("b").textContent=ad.title;
+    el.querySelector(".in span").textContent=ad.text;
+    el.querySelector(".cta").textContent=ad.cta;
+  });
+}
+function row(n){return stats[n]||(stats[n]={v:0,c:0})}
+function report(){
+  $("rows").innerHTML=slots.map(el=>{const s=row(el.dataset.slot);
+    return "<tr><td>"+el.dataset.slot+"</td><td>"+s.v+"</td><td>"+s.c+"</td></tr>"}).join("");
+}
+// count a view once when the ad becomes visible
+const seen=new WeakSet();
+const io=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting&&!seen.has(e.target)&&e.target.offsetParent!==null||(e.isIntersecting&&!seen.has(e.target)&&e.target.closest("#sticky,#pop"))){
+    seen.add(e.target);row(e.target.dataset.slot).v++;report();}
+})},{threshold:.5});
+slots.forEach(el=>{io.observe(el);
+  el.addEventListener("click",()=>{row(el.dataset.slot).c++;report();
+    if($("open").checked&&ad.url)window.open(ad.url,"_blank","noopener");});
+});
+// toggles
+const tg=$("toggles");
+slots.forEach(el=>{
+  const l=document.createElement("label");
+  l.innerHTML='<input type="checkbox" checked> '+el.dataset.slot;
+  l.firstChild.addEventListener("change",e=>{
+    const host=el.id==="slot-sticky"?$("sticky"):el;
+    host.classList.toggle("hide",!e.target.checked);
+  });
+  tg.appendChild(l);
+});
+["a-title","a-text","a-cta","a-url","a-color"].forEach(i=>$(i).addEventListener("input",render));
+// tool logic
+const t=$("txt");
+function count(){
+  const v=t.value,w=v.trim()?v.trim().split(/\s+/).length:0;
+  $("w").textContent=w;$("c").textContent=v.length;
+  $("s").textContent=(v.match(/[^.!?]+[.!?]+/g)||[]).length;
+  $("r").textContent=Math.max(w?1:0,Math.ceil(w/200));
+}
+t.addEventListener("input",count);
+$("clear").onclick=()=>{t.value="";count()};
+$("upper").onclick=()=>{t.value=t.value.toUpperCase();count()};
+$("lower").onclick=()=>{t.value=t.value.toLowerCase();count()};
+// sticky + popup
+$("stickyx").onclick=()=>$("sticky").classList.add("hide");
+function showPop(){$("pop").classList.remove("hide");const el=$("slot-pop");row(el.dataset.slot).v++;report()}
+$("popx").onclick=()=>$("pop").classList.add("hide");
+$("popbtn").onclick=showPop;
+setTimeout(showPop,6000);
+$("reset").onclick=()=>{for(const k in stats)delete stats[k];report()};
+render();report();
+</script>
+</body>
+</html>
